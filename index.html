@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>WebModel</title>
+        <style>
+            body { margin: 0; }
+            canvas { width: 100%; height: 100%; }
+            #container {position: relative;}
+            #container canvas { position: absolute;}
+            #overlay {z-index: 1; width: 100%}
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="canvas" style="position:relative; width: 100%; height:100%;"></div>
+        </div>
+        <script type="text/javascript" src="rhino3dm.js"></script>
+        <script type="text/javascript" src="rendererXR.js"></script>
+        <script type="module" src="projectModelViewer.js"></script>
+    </body>
+</html>
