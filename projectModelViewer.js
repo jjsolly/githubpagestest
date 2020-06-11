@@ -1,7 +1,7 @@
 
-import * as THREE from '/three.module.js';
+import * as THREE from './three.module.js';
 import {OrbitControls} from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
-import { VRButton } from '/VRButton.js';
+import { VRButton } from './VRButton.js';
 let fetchPromise = fetch("model.3dm");
 
 rhino3dm().then(async m => {
@@ -13,7 +13,7 @@ rhino3dm().then(async m => {
 	let arr = new Uint8Array(buffer);
 	let doc = rhino.File3dm.fromByteArray(arr);
 
-	THREE.Object3D.DefaultUp = new THREE.Vector3(0,0,1)
+	//THREE.Object3D.DefaultUp = new THREE.Vector3(0,1,0)
 	init();
 	
 	let objects = doc.objects();
@@ -21,7 +21,7 @@ rhino3dm().then(async m => {
 	for (let i = 0; i < objects.count; i++) {
 		let mesh = objects.get(i).geometry();
 		let att = objects.get(i).attributes();
-		
+
 		var r = 255;
 		var g = 0;
 		var b = 127;
@@ -51,6 +51,7 @@ rhino3dm().then(async m => {
 			});
 			
 			let threeMesh = meshToThreejs(mesh, tempMat);
+			threeMesh.rotateX(-0.5*Math.PI);
 			scene.add(threeMesh);
 		}
 	}
@@ -62,11 +63,13 @@ var scene, camera, renderer, controls;
 function init(){
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(1,1,1);
-	camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 1, 1000);
-	camera.position.set(-25,-150,50);
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 1, 1000);
+	//camera.position.set(-25,-150,50);
+	camera.position.set(-2,1.6,6); //this needs to be carefully
+	camera.lookAt(0,1.6,0);
 	
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer = new THREE.WebGLRenderer({antialias: true});
+	renderer.setPixelRatio(window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.xr.enabled = true;
@@ -83,20 +86,24 @@ function init(){
 	
 	renderer.setSize(canvasSpace.clientWidth, canvasHeight);
 	camera.aspect = canvasSpace.clientWidth/canvasHeight;
+
 	camera.updateProjectionMatrix();
 	
 	canvasSpace.appendChild(renderer.domElement);
-
 	canvasSpace.appendChild(VRButton.createButton(renderer));
 	
 	var amb = new THREE.AmbientLight( 0x404040 ); // soft white light
-	scene.add( amb );
+	scene.add(amb);
 	
 	var hemi = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 	scene.add(hemi);
+
+	var axesHelper = new THREE.AxesHelper( 5 );
+	scene.add(axesHelper);
 	
 	controls = new OrbitControls(camera, renderer.domElement);
-	controls.target = new THREE.Vector3(0.5,0.5,6);
+	controls.target = new THREE.Vector3(0.0,1.6,0);
+	controls.update();
 
 	window.addEventListener( 'resize', onWindowResize, false );
 	animate();
@@ -108,7 +115,7 @@ var animate = function () {
 	} );
 };
 
-function onWindowResize() {
+function onWindowResize(){
 	var canvasSpace = document.getElementById('canvas');
 	
 	var renderCanvas = renderer.domElement;
