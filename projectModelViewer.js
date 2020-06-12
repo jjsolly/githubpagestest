@@ -1,7 +1,7 @@
 
-import * as THREE from 'https://jjsolly.github.io/githubpagestest/three.module.js';
-import {OrbitControls} from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
-import { VRButton } from 'https://jjsolly.github.io/githubpagestest/VRButton.js';
+import * as THREE from 'three.module.js';
+import {OrbitControls} from "OrbitControls.js";
+import { VRButton } from 'VRButton.js';
 let fetchPromise = fetch("model.3dm");
 
 rhino3dm().then(async m => {
